@@ -1,0 +1,42 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: Stock tracker lambdas
+  Resources:
+  StockProcessorLambda:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: stock-processor-lambda.handler
+      Runtime: python3.7
+      CodeUri: ./stockprocessorcode
+      Description: 'Lambda to compare and process stock data'
+      MemorySize: 128
+      Timeout: 60
+      Role: !GetAtt StockProcessorLambdaRole
+
+  NotificationQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      FifoQueue: false
+      QueueName: notificationqueue
+      VisibilityTimeout: 30
+
+  StockProcessorLambdaRole:
+        Type: AWS::IAM::Role
+        Properties:
+          AssumeRolePolicyDocument:
+            Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+              - sts:AssumeRole
+        Policies:
+          - PolicyName:
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - 'sqs:SendMessage'
+                  Resource:
+                    - !GetAtt NotificationQueue.Arn
