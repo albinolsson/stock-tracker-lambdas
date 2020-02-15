@@ -19,24 +19,3 @@ Description: Stock tracker lambdas
       FifoQueue: false
       QueueName: notificationqueue
       VisibilityTimeout: 30
-
-  StockProcessorLambdaRole:
-        Type: AWS::IAM::Role
-        Properties:
-          AssumeRolePolicyDocument:
-            Statement:
-            - Effect: Allow
-              Principal:
-                Service:
-                  - lambda.amazonaws.com
-              Action:
-              - sts:AssumeRole
-        Policies:
-          - PolicyName:
-            PolicyDocument:
-              Statement:
-                - Effect: Allow
-                  Action:
-                    - 'sqs:SendMessage'
-                  Resource:
-                    - !GetAtt NotificationQueue.Arn
