@@ -15,6 +15,5 @@ Resources:
   NotificationQueue:
     Type: AWS::SQS::Queue
     Properties:
-      FifoQueue: false
       QueueName: notificationqueue
       VisibilityTimeout: 30
